@@ -1,0 +1,16 @@
+torch
+torchvision
+PyYAML
+numpy
+tokenizers
+safetensors
+huggingface_hub
+tqdm
+requests
+datasets
+accelerate
+transformers
+psutil
+fastapi
+pydantic
+uvicorn

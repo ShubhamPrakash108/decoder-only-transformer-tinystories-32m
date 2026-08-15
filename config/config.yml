@@ -1,0 +1,99 @@
+# Model Architecture
+
+# Dimensionality of each token embedding vector (hidden size of the model)
+d_model: 768
+
+# Total number of unique tokens the model can represent (vocabulary size)
+vocab_size: 32000
+
+# Number of attention heads in each multi-head self-attention layer
+num_heads: 8
+
+# Maximum number of tokens the model can attend to in a single forward pass
+max_seq_len: 1024
+
+# Total number of stacked Transformer decoder blocks.
+# ↑ From 1 → 6: GPT-2 Small uses 12; 6 is a good balance between capacity
+#   and training time on CPU.  With only 1 block the model had no depth to
+#   learn any structure beyond bigram statistics — hence the repetitive output.
+number_of_transformer_block: 1
+
+# Dropout probability applied to attention weights and feed-forward layers.
+# ↑ Slightly increased from 0.1 → 0.2 to compensate for the larger model
+#   capacity introduced by 6 blocks (reduces overfitting risk).
+dropout: 0.2
+
+# Number of tokens in each training context window (sequence length used during
+# dataset preparation).
+# ↑ From 32 → 128: the model was only seeing 32-token snippets, so it could
+#   never learn sentence- or paragraph-level structure. 128 gives it enough
+#   context to form coherent multi-sentence patterns without requiring a GPU.
+# ⚠️  IMPORTANT: changing block_size requires re-running prepare_dataset.py
+#    to rebuild the X.pt / y.pt tensors with the new window size.
+block_size: 128
+
+# Tokenizer
+
+# Directory containing cleaned raw text used to train the tokenizer
+dataset_dir: "corpus/data/pretraining_data/clean"
+
+# Directory where trained tokenizer artifacts (vocab, merges, config) are saved
+save_dir: "artifacts/tokenizer/v1/"
+
+# Special tokens added to the vocabulary for structural/semantic purposes
+special_tokens:
+  - "<|endoftext|>"   # marks the boundary between documents
+  - "<|pad|>"         # padding token to align sequences in a batch
+  - "<|unk|>"         # represents out-of-vocabulary tokens
+
+# Pretraining Data 
+download_data:
+    number_of_stories_rows: 100000
+
+pretraining_data:
+  # Filename of the input (X) token-id tensor saved as a .pt file
+  x_file: "X.pt"
+
+  # Filename of the target (y) token-id tensor saved as a .pt file
+  y_file: "y.pt"
+
+  # Root directory that holds the tokenised pretraining tensor files
+  pt_data_dir: "corpus/data/pretraining_data/pt_data_file/pretraining"
+
+# Dataloader 
+
+dataloader:
+  # Fraction of the dataset reserved for training (80 %)
+  train_split: 0.8
+
+  # Fraction of the dataset reserved for validation / hyperparameter tuning (10 %)
+  validation_split: 0.1
+
+  # Fraction of the dataset reserved for final held-out testing (10 %)
+  test_split: 0.1
+
+  # Number of samples packed into each mini-batch during training / evaluation.
+  # ↓ Reduced from 64 → 32 because larger block_size (128 vs 32) means each
+  #   sample is 4× bigger in memory. This keeps RAM usage roughly the same.
+  batch_size: 500
+
+  # Whether to shuffle the training set before each epoch (improves generalisation)
+  shuffle_train: true
+
+  # Whether to shuffle the validation set (usually false — keeps evals deterministic)
+  shuffle_validation: false
+
+  # Whether to shuffle the test set (usually false — keeps final eval deterministic)
+  shuffle_test: false
+
+  # Number of worker processes used to load data in parallel (0 = main process only)
+  num_workers: 0
+
+  # Pin loaded tensors to page-locked (pinned) memory for faster CPU→GPU transfers
+  pin_memory: false
+
+
+# Inference
+Inference:
+  # HuggingFace model link
+  hf_model_link: shubhamprakash108/gpt-model-2-decoder-100000-tiny-stories-fp16

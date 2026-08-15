@@ -1,0 +1,19 @@
+{
+  "architectures": [
+    "GPTCustomForCausalLM"
+  ],
+  "auto_map": {
+    "AutoConfig": "modeling_gpt_custom.GPTCustomConfig",
+    "AutoModelForCausalLM": "modeling_gpt_custom.GPTCustomForCausalLM"
+  },
+  "d_model": 768,
+  "dropout": 0.2,
+  "dtype": "float32",
+  "is_decoder": true,
+  "max_seq_len": 1024,
+  "model_type": "gpt-custom",
+  "num_heads": 8,
+  "number_of_transformer_block": 1,
+  "transformers_version": "5.13.1",
+  "vocab_size": 32000
+}
