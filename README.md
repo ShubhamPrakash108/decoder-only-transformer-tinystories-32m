@@ -162,6 +162,8 @@ Prefill processes the prompt once. Each later decoding step processes only the n
 
 ### API load-test results
 
+Tested on an AMD Ryzen 5 4500U CPU.
+
 ```text
 
 API Load Test: KV Caching Speedup
