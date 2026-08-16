@@ -160,6 +160,34 @@ flowchart LR
 
 Prefill processes the prompt once. Each later decoding step processes only the newest token while reusing the cached keys and values from earlier positions.
 
+### API load-test results
+
+```text
+
+API Load Test: KV Caching Speedup
+
+Note: Since batching is not built yet (Stage 4), requests are sent sequentially.
+
+[1/2] Sending 4 requests with UNIQUE prompts (Normal / Cache Miss)...
+      Request 1 took 3.064s
+      Request 2 took 2.522s
+      Request 3 took 2.521s
+      Request 4 took 2.709s
+
+[2/2] Sending 4 requests with IDENTICAL prompts (KV Cache Hit)...
+      (Pre-filling cache for shared prompt...)
+      Request 1 took 2.268s
+      Request 2 took 2.443s
+      Request 3 took 2.255s
+      Request 4 took 2.277s
+
+  RESULTS:
+  Avg latency NORMAL (Cold Start):   2.704s
+  Avg latency KV CACHE (Warm Start): 2.310s
+
+
+```
+
 ## Repository structure
 
 ```text
